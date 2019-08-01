@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-worker
+spec:
+  ports:
+    - name: webui
+      port: 8085
+      targetPort: 8085
+  selector:
+    component: spark-worker
+  type: LoadBalancer
+  externalTrafficPolicy: Local     

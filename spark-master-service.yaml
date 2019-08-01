@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-master
+spec:
+  ports:
+    - name: webui
+      port: 8083
+      targetPort: 8080
+    - name: spark
+      port: 7077
+      targetPort: 7077
+  selector:
+    component: spark-master
+  type: LoadBalancer
+  externalTrafficPolicy: Local 

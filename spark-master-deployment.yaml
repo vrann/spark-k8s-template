@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: spark-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: spark-master
+  template:
+    metadata:
+      labels:
+        component: spark-master
+    spec:
+      hostname: spark-master
+      containers:
+        - name: spark-master
+          image: spark-hadoop:1.0.35
+          command: ["/opt/spark/sbin/start-master.sh"]
+          terminationMessagePolicy: FallbackToLogsOnError
+          ports:
+            - containerPort: 4040
+            - containerPort: 7077
+            - containerPort: 8080
+          env:
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP 
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+          - name: varlog
+            mountPath: /opt/spark/logs/
+          - name: datadir
+            mountPath: /opt/spark/data/
+      volumes:
+      - name: varlog
+        hostPath:
+          # directory location on host
+          path: /tmp/logs
+          # this field is optional
+          type: DirectoryOrCreate
+      - name: datadir
+        hostPath:
+          # directory location on host
+          path: datafiles
+          # this field is optional
+          type: DirectoryOrCreate 
